@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Каталог інновацій</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f6f6f6; margin: 0; }
+    h1 { text-align: center; }
+    .container { max-width: 1100px; margin: 30px auto; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px #0001; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+    th { background: #f0f0f0; }
+    tr:hover { background: #f9f9f9; }
+    .links a { margin-right: 10px; color: #1976d2; text-decoration: none; }
+    .links a:hover { text-decoration: underline; }
+    @media (max-width: 700px) {
+      table, thead, tbody, th, td, tr { display: block; }
+      th { position: sticky; top: 0; }
+      td { border: none; border-bottom: 1px solid #eee; }
+      td:before { font-weight: bold; display: block; }
+      td[data-label]:before { content: attr(data-label); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Каталог інновацій</h1>
+    <table id="innovations">
+      <thead>
+        <tr>
+          <th>№</th>
+          <th>Назва</th>
+          <th>Категорія</th>
+          <th>Регіон</th>
+          <th>Посилання</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JS will fill rows here -->
+      </tbody>
+    </table>
+  </div>
+  <script>
+    fetch('data.json')
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.querySelector('#innovations tbody');
+        data.forEach(item => {
+          // Деякі об'єкти мають лише booth_link
+          if (!item.title) return;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td data-label="№">${item.position || ''}</td>
+            <td data-label="Назва">${item.title || ''}</td>
+            <td data-label="Категорія">${item.category || ''}</td>
+            <td data-label="Регіон">${item.region || ''}</td>
+            <td data-label="Посилання" class="links">
+              ${item.details_link ? `<a href="${item.details_link}">Деталі</a>` : ''}
+              ${item.booth_link ? `<a href="${item.booth_link}">Віртуальний стенд</a>` : ''}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+  </script>
+</body>
+</html>
